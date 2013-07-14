@@ -2,13 +2,7 @@ require_relative 'lib/story'
 require_relative 'lib/story_board'
 require_relative 'lib/remote_source'
 require_relative 'lib/categories'
-
-
-def add_remote_stories
-	RemoteSource.get.map do |story|
-  		StoryBoard.add_story story
-  	end
-end 
+require 'pry'
 
 def show_categories
 	Category.display
@@ -42,6 +36,12 @@ def get_input
 	gets.chomp
 end
     
+def add_remote_stories(resource_type, section)
+	remote_source = RemoteSource.new(resource_type, section) 
+	remote_source.get.map do |story|
+  		StoryBoard.add_story story
+  	end
+end 
 
 
 loop do
@@ -55,8 +55,10 @@ loop do
 	c = gets.to_i
 	
 	if c == 1
-   		show_categories
-   		add_remote_stories
+   		category = Category.new 
+   		a = category.get_article_type
+   		b = category.get_category 
+   		add_remote_stories(a, b)
    		show_story_board
 	elsif c == 2
    		add_manual_stories
@@ -67,5 +69,6 @@ loop do
    		show_message "Invalid Selection"
 	end
 end
+
 
 #http://api.nytimes.com/svc/mostpopular/v2/"#{resource_type}"/"#{cat}"/30.json?api-key=e82456d31d70bdda520e1c0a0352e603:8:67860687
